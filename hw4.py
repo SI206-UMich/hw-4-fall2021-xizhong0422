@@ -28,7 +28,9 @@ class Customer:
     # Submit_order takes a cashier, a stall and an amount as parameters, 
     # it deducts the amount from the customer’s wallet and calls the receive_payment method on the cashier object
     def submit_order(self, cashier, stall, amount): 
-        pass
+        self.wallet -= amount
+        cashier.receive_payment(stall, amount)
+
 
     # The __str__ method prints the customer's information.    
     def __str__(self):
@@ -71,8 +73,38 @@ class Cashier:
 
 ## Complete the Stall class here following the instructions in HW_4_instructions_rubric
 class Stall:
+    def __init__(self, name, inventory = {}, cost = 7, earnings = 0):
+        self.name = name
+        self.inventory = inventory.copy() #make a copy
+        self.cost = cost
+        self.earnings = earnings
     
-    pass
+    def process_order(self, name, quantity):
+        self.inventory -= quantity
+        self.earnings += quantity * self.cost
+        self.inventory[name] -= 1
+    
+    def has_item(self, food, quantity):
+        if self.inventory[food]:
+            if self.inventory[food] >= quantity:
+                return True
+        return False
+    
+    def stock_up(self, food, quantity):
+        if self.inventory[food]:
+            self.inventory[food] += quantity
+        else:
+            self.inventory[food] = 0
+            self.inventory[food] += quantity
+    
+    def compute_cost(self, quantity):
+        return (self.cost * quantity)
+    
+    def __str__(self):
+        return "Hello, we are " + self.name + ". This is the current menu " + str(self.inventory.keys()) + ". We charge $" + self.cost + " per item. We have $" + self.earnings + " in total."
+
+        
+
 
 
 class TestAllMethods(unittest.TestCase):
@@ -147,8 +179,8 @@ class TestAllMethods(unittest.TestCase):
     def test_compute_cost(self):
         #what's wrong with the following statements?
         #can you correct them?
-        self.assertEqual(self.s1.compute_cost(self.s1,5), 51)
-        self.assertEqual(self.s3.compute_cost(self.s3,6), 45)
+        self.assertEqual(self.s1.compute_cost(self.s1,5), 50)
+        self.assertEqual(self.s3.compute_cost(self.s3,6), 42) #calculation error!
 
 	# Check that the stall can properly see when it is empty
     def test_has_item(self):
