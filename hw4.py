@@ -179,34 +179,52 @@ class TestAllMethods(unittest.TestCase):
     def test_compute_cost(self):
         #what's wrong with the following statements?
         #can you correct them?
-        self.assertEqual(self.s1.compute_cost(self.s1,5), 50)
+        self.assertEqual(self.s1.compute_cost(self.s1,5), 50) #calculation error!
         self.assertEqual(self.s3.compute_cost(self.s3,6), 42) #calculation error!
 
 	# Check that the stall can properly see when it is empty
     def test_has_item(self):
         # Set up to run test cases
-
+        
         # Test to see if has_item returns True when a stall has enough items left
         # Please follow the instructions below to create three different kinds of test cases 
         # Test case 1: the stall does not have this food item: 
-        
+        self.assertEqual(self.s1.has_item("Fries" , 1), False, "testing does not have this item")
         # Test case 2: the stall does not have enough food item: 
-        
+        self.assertEqual(self.s1.has_item("Burger", 60), False, "the stall does not have enough burgers"),
         # Test case 3: the stall has the food item of the certain quantity: 
-        pass
+        self.assertEqual(self.s1.has_item("Burger", 40), True, "the stall do have enough burgers (at the border)"),
+
 
 	# Test validate order
     def test_validate_order(self):
 		# case 1: test if a customer doesn't have enough money in their wallet to order
+        print ("Case 1 \n")
+        print ("Customer c1 only have $100, shouldn't be able to order 11 Burgers at Grill Queens")
+        self.f1.validate_order(self.c1, self.s1, "Burger", 11)
+        
+        #print ("f1 should not have enough burgers")
+
 
 		# case 2: test if the stall doesn't have enough food left in stock
+        print ("Case 2 \n")
+        print ("There is not enough burgers in this new cashier")
+        c3 = Cashier("North")
+        self.f1.validate_order(self.c1, c3, "Burger", 1)
 
 		# case 3: check if the cashier can order item from that stall
-        pass
+        print ("Case 3: check if the cashier can order item from that stall \n")
+        self.f1.validate_order(self.c1, self.s1, "Burger", 1)
+        print(self.f1)
+        print ("\nf1 should have $90 now after buying one burger from cashier c1\n")
+        print("now, s1 should have 39 burgers.")
+        self.assertEqual(self.s1.has_item("Burger", 39), True, "test that s1 has 39 burgers")
+        self.assertEqual(self.s1.has_item("Burger", 40), False, "test that s1 doesn't have 40 burgers")
 
     # Test if a customer can add money to their wallet
     def test_reload_money(self):
-        pass
+        self.f1.reload_money(100)
+        self.assertEqual(self.f1.wallet, 200, "test that f1 has $200")
     
 ### Write main function
 def main():
