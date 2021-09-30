@@ -1,6 +1,6 @@
 
 import unittest
-
+import random
 # The Customer class
 # The Customer class represents a customer who will order from the stalls.
 class Customer: 
@@ -45,6 +45,7 @@ class Cashier:
     def __init__(self, name, directory =[]):
         self.name = name
         self.directory = directory[:] # make a copy of the directory
+        self.count = 0
 
     # Whether the stall is in the cashier's directory
     def has_stall(self, stall):
@@ -64,6 +65,10 @@ class Cashier:
 	# Function returns cost of the order, using compute_cost method
     def place_order(self, stall, item, quantity):
         stall.process_order(item, quantity)
+        self.count += 1
+        if self.count % 10 == 0:
+            if random.randint(0,19) == 0:
+                return stall.compute_cost(quantity)  - 10
         return stall.compute_cost(quantity) 
     
     # string function.
@@ -83,6 +88,7 @@ class Stall:
         self.inventory[name] = self.inventory[name] - quantity
         self.earnings += quantity * self.cost
         #self.inventory[name] -= 1
+        
     
     def has_item(self, food, quantity):
         if food in self.inventory.keys():
@@ -245,18 +251,29 @@ class TestAllMethods(unittest.TestCase):
 ### Write main function
 def main():
     #Create different objects 
+    inventory1 = {"Ramen":40, "Mochi":50, "Sushi": 30}
+    inventory2 = {"Ice Cream":20, "Fries":10}
+    mary = Customer("Mary", 30000)
+    sam = Customer("Sam", 150)
+    sue = Customer("Sue", 200)
+    stall1 = Stall("The Grill Queen", inventory1, cost = 10)
+    stall2 = Stall("Tamale Train", inventory2, cost = 9)
+    cashier1 = Cashier("North", [stall1])
+    cashier2 = Cashier("South", [stall1, stall2])
+
     
     #Try all cases in the validate_order function
     #Below you need to have *each customer instance* try the four cases
     #case 1: the cashier does not have the stall 
-    
+    mary.validate_order(cashier1, stall2, "Ice Cream", 1)
     #case 2: the casher has the stall, but not enough ordered food or the ordered food item
-    
+    mary.validate_order(cashier2, stall2, "Ice Cream", 30)
     #case 3: the customer does not have enough money to pay for the order: 
-    
+    sam.validate_order(cashier2, stall1, "Mochi", 40)
     #case 4: the customer successfully places an order
-
-    pass
+    sue.validate_order(cashier2, stall1, "Ramen", 1)
+    print(sue)
+    
 
 if __name__ == "__main__":
 	main()
