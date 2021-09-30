@@ -68,7 +68,7 @@ class Cashier:
         self.count += 1
         if self.count % 10 == 0:
             if random.randint(0,19) == 0:
-                return stall.compute_cost(quantity)  - 10
+                return stall.compute_cost(quantity)  - 10 #reward!
         return stall.compute_cost(quantity) 
     
     # string function.
